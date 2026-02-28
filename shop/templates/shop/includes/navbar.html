@@ -1,0 +1,24 @@
+{% load static %}
+<header class="header">
+    <div class="logo-area">
+        <img src="{% static 'shop/logo.jpg' %}" alt="Logo" class="main-logo">
+        <h1>ПИВОРЫБ <span>Digital Fab</span></h1>
+    </div>
+    
+    <nav>
+    <a href="{% url 'index' %}">Каталог</a>
+    
+    <a href="{% url 'fish_game' %}" class="game-link">🎮 ИГРАТЬ</a>
+    
+    {% if user.is_authenticated %}
+        <span style="font-size: 0.9rem;">Привет, <b>{{ user.username }}</b>!</span>
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout">Выход</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Вход</a>
+        <a href="{% url 'register' %}">Регистрация</a>
+    {% endif %}
+</nav>
+</header>

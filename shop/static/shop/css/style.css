@@ -1,0 +1,170 @@
+:root {
+    --dark: #0a0a0a;
+    --gold: #c5a059;
+    --neon: #39ff14;
+}
+
+body {
+    background-color: var(--dark);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ФИКСИРОВАННАЯ ШАПКА */
+.header {
+    background: rgba(10, 10, 10, 0.95);
+    border-bottom: 2px solid var(--gold);
+    padding: 10px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 70px;
+    backdrop-filter: blur(5px);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.main-logo {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.header h1 span {
+    color: var(--neon);
+    display: block;
+    font-size: 0.8rem;
+}
+
+/* НАВИГАЦИЯ */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a, .btn-logout {
+    color: white;
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    padding: 5px 15px;
+    border-radius: 4px;
+    transition: 0.3s;
+    background: transparent;
+    cursor: pointer;
+}
+
+nav a:hover, .btn-logout:hover {
+    background: var(--gold);
+    color: black;
+}
+
+/* КОНТЕНТ */
+.container {
+    margin-top: 100px;
+    padding: 20px 5%;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon);
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.price {
+    color: var(--neon);
+    font-size: 1.5rem;
+    margin: 10px 0;
+}
+.secret-btn {
+    background: transparent;
+    color: #ff4444; /* Красный цвет предупреждения */
+    border: 2px solid #ff4444;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    letter-spacing: 2px;
+}
+
+.secret-btn:hover {
+    background: #ff4444;
+    color: black;
+    box-shadow: 0 0 30px #ff4444; /* Мощное красное свечение */
+    transform: scale(1.1); /* Кнопка немного увеличивается */
+}
+
+/* Эффект тряски при нажатии (мы его уже добавляли, убедись что он есть) */
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    50% { transform: translate(-1px, 2px) rotate(1deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    100% { transform: translate(1px, -2px) rotate(0deg); }
+}
+.game-link {
+    color: var(--neon) !important; /* Зеленый неон */
+    border: 1px solid var(--neon) !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: pulse 2s infinite; /* Пульсация */
+}
+
+.game-link:hover {
+    background: var(--neon) !important;
+    color: black !important;
+    box-shadow: 0 0 20px var(--neon);
+}
+
+/* Анимация пульсации для привлечения внимания */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(57, 255, 20, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0); }
+}

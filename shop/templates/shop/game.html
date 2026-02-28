@@ -1,0 +1,161 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div style="text-align: center; color: white; padding-top: 20px;">
+    <h1 style="color: var(--gold); text-shadow: 0 0 10px var(--gold);">РЫБАЛКА DIGITAL FAB</h1>
+    <p>У тебя есть 30 секунд! Собери улов для скидки!</p>
+    
+    <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+        <div style="position: relative;">
+            <canvas id="gameCanvas" width="400" height="500" style="border: 3px solid var(--gold); background: #050505; cursor: none;"></canvas>
+            
+            <div id="overlay" style="position: absolute; top: 0; left: 0; width: 400px; height: 500px; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <h2 id="overlayText" style="color: var(--neon);">ГОТОВ?</h2>
+                <button onclick="startGame()" style="background: var(--neon); color: black; padding: 15px 30px; border: none; font-weight: bold; cursor: pointer;">СТАРТ</button>
+            </div>
+        </div>
+        
+        <div style="border: 2px solid var(--gold); padding: 20px; min-width: 250px; background: #111;">
+    <h3 style="color: var(--neon);">🏆 ТОП РЫБОЛОВОВ</h3>
+    <hr border="1" color="#c5a059">
+    {% for s in top_scores %}
+        <p style="text-align: left; font-size: 1.1rem; margin: 10px 0;">
+            {{ forloop.counter }}. <b>{{ s.user__username }}</b> — 
+            <span style="color: var(--neon);">{{ s.max_score }}</span>
+        </p>
+    {% empty %}
+        <p>Будь первым!</p>
+    {% endfor %}
+</div>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const overlay = document.getElementById("overlay");
+const overlayText = document.getElementById("overlayText");
+
+let score = 0;
+let timeLeft = 30;
+let gameActive = false;
+let player = { x: 175, y: 430, width: 60, height: 60 };
+let items = [];
+let gameInterval, spawnInterval, timerInterval;
+
+// Управление
+canvas.addEventListener("mousemove", (e) => {
+    if (!gameActive) return;
+    let rect = canvas.getBoundingClientRect();
+    player.x = e.clientX - rect.left - player.width / 2;
+    // Ограничение, чтобы не уходил за края
+    if (player.x < 0) player.x = 0;
+    if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+});
+
+function spawnItem() {
+    const types = ['🐟', '🍺', '👞', '🍗']; // Рыба, Пиво, Башмак (минус), Курица (секретка)
+    items.push({
+        x: Math.random() * (canvas.width - 40),
+        y: -40,
+        type: types[Math.floor(Math.random() * types.length)],
+        speed: 4 + Math.random() * 3
+    });
+}
+
+function startGame() {
+    score = 0;
+    timeLeft = 30;
+    items = [];
+    gameActive = true;
+    overlay.style.display = "none";
+    
+    // Запуск циклов
+    spawnInterval = setInterval(spawnItem, 800);
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) endGame();
+    }, 1000);
+    
+    update();
+}
+
+function endGame() {
+    gameActive = false;
+    clearInterval(spawnInterval);
+    clearInterval(timerInterval);
+    overlay.style.display = "flex";
+    overlayText.innerHTML = "ВРЕМЯ ВЫШЛО!<br>Твой счет: " + score;
+    
+    // Сохранение в базу через созданный ранее view
+    saveResult(score);
+}
+
+function saveResult(finalScore) {
+    fetch('/save_score/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ score: finalScore })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Перезагружаем страницу через 1.5 секунды, чтобы таблица обновилась
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
+    });
+}
+
+function update() {
+    if (!gameActive) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Рисуем игрока (Корзина)
+    ctx.font = "50px Arial";
+    ctx.fillText("🧺", player.x, player.y + 40);
+
+    items.forEach((item, index) => {
+        item.y += item.speed;
+        ctx.font = "30px Arial";
+        ctx.fillText(item.type, item.x, item.y);
+
+        // Коллизия
+        if (item.y > player.y && item.y < player.y + player.height &&
+            item.x > player.x - 20 && item.x < player.x + player.width) {
+            
+            if (item.type === '🐟') score += 10;
+            else if (item.type === '🍺') score += 25;
+            else if (item.type === '👞') score -= 15;
+            else if (item.type === '🍗') {
+                score += 50;
+                // Тот самый звук курицы при поимке бонуса!
+                new Audio('/static/shop/scream.mp3').play(); 
+            }
+            
+            items.splice(index, 1);
+        }
+
+        // Удаление если улетело вниз
+        if (item.y > canvas.height) items.splice(index, 1);
+    });
+
+    // Отрисовка интерфейса
+    ctx.fillStyle = "white";
+    ctx.font = "20px 'Courier New'";
+    ctx.fillText("СЧЕТ: " + score, 20, 40);
+    ctx.fillStyle = timeLeft < 10 ? "red" : "var(--neon)";
+    ctx.fillText("ВРЕМЯ: " + timeLeft, 280, 40);
+
+    requestAnimationFrame(update);
+}
+</script>
+
+<style>
+    /* Дополнительный стиль для выделения топ-игроков */
+    b { color: var(--gold); }
+</style>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="product-grid">
+    {% for p in products %}
+    <a href="{% url 'product_detail' p.pk %}" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            <img src="{{ p.image.url }}" alt="{{ p.name }}">
+            <h3>{{ p.name }}</h3>
+            <div class="price">{{ p.price }} ₽</div>
+            <p style="color: #c5a059; font-size: 0.8rem; margin-top: 10px;">Нажми, чтобы узнать больше</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

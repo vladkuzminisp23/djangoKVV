@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ПИВОРЫБ | Магазин</title>
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+</head>
+<body>
+
+    {% include 'shop/includes/navbar.html' %}
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>
+<audio id="secret-sound">
+        <source src="{% static 'shop/scream.mp3' %}" type="audio/mpeg">
+    </audio>
+
+    <footer style="margin-top: 50px; padding: 40px; text-align: center; border-top: 1px solid var(--gold); background: #050505;">
+    <p style="color: var(--gold); font-size: 0.9rem; margin-bottom: 20px;">© 2026 ПИВОРЫБ Digital Fab</p>
+    
+    <button onclick="playScream()" class="secret-btn">
+        НЕ НАЖИМАТЬ
+    </button>
+</footer>
+
+    <script>
+        function playScream() {
+    var audio = document.getElementById("secret-sound");
+    audio.currentTime = 0;
+    audio.play();
+    
+    // 1. Тряска экрана
+    document.body.style.animation = "shake 0.5s";
+    
+    // 2. Ждем окончания звука (через 3 секунды, или сколько длится твой файл)
+    audio.onended = function() {
+        // Создаем эффект "черного экрана смерти"
+        document.body.innerHTML = `
+            <div style="background: black; color: red; height: 100vh; display: flex; 
+                        flex-direction: column; align-items: center; justify-content: center; 
+                        font-family: 'Courier New', monospace; text-align: center;">
+                <h1 style="font-size: 3rem;">КРИТИЧЕСКАЯ ОШИБКА</h1>
+                <p style="font-size: 1.5rem;">Система Пиворыб не выдержала...</p>
+                <p style="color: #555;">Вкладка будет закрыта автоматически</p>
+            </div>
+        `;
+        
+        // 3. Пытаемся закрыть вкладку через пару секунд
+        setTimeout(function() {
+            window.close();
+            // Если window.close() не сработал (защита браузера), отправляем на пустую страницу
+            window.location.href = "about:blank"; 
+        }, 2000);
+    };
+}
+    </script>

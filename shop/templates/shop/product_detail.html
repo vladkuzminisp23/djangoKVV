@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="product-detail-container" style="padding: 40px; display: flex; gap: 40px; color: white;">
+    <img src="{{ product.image.url }}" style="max-width: 500px; border-radius: 10px; border: 2px solid #c5a059;">
+    <div>
+        <h1 style="color: #c5a059;">{{ product.name }}</h1>
+        <p style="font-size: 1.2rem; line-height: 1.6;">{{ product.description }}</p>
+        <div style="font-size: 2rem; color: #39ff14; margin: 20px 0;">{{ product.price }} ₽</div>
+        <a href="{% url 'index' %}" class="btn" style="text-decoration: none; display: inline-block; width: auto;">Назад в каталог</a>
+    </div>
+</div>
+{% endblock %}
