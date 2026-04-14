@@ -8,6 +8,46 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import GameScore
 from django.db.models import Max # Добавь этот импорт в самый верх файла
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product # Убедись, что модель Product импортирована
+
+# 1. Функция добавления в корзину
+def cart_add(request, product_id):
+    # Достаем корзину из сессии (или создаем пустую, если её нет)
+    cart = request.session.get('cart', {})
+    product = get_object_or_404(Product, id=product_id)
+    
+    # ID товара переводим в строку, так как сессии Django любят строки
+    pid = str(product.id)
+    
+    if pid in cart:
+        cart[pid]['quantity'] += 1 # Если товар уже есть, увеличиваем количество
+    else:
+        # Если товара нет, добавляем его со всеми данными
+        cart[pid] = {
+            'quantity': 1, 
+            'price': float(product.price), 
+            'name': product.name
+        }
+        
+    # Сохраняем обновленную корзину обратно в сессию
+    request.session['cart'] = cart
+    # После добавления отправляем пользователя на страницу корзины
+    return redirect('cart_detail')
+
+# 2. Функция отображения корзины
+def cart_detail(request):
+    cart = request.session.get('cart', {})
+    
+    # Считаем общую сумму товаров в корзине
+    total_price = sum(item['price'] * item['quantity'] for item in cart.values())
+    
+    return render(request, 'shop/cart_detail.html', {'cart': cart, 'total_price': total_price})
+
+# 3. Функция очистки корзины
+def cart_clear(request):
+    request.session['cart'] = {}
+    return redirect('cart_detail')
 
 @csrf_exempt # Чтобы упростить AJAX-запрос
 def save_score(request):

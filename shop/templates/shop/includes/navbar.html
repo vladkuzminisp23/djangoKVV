@@ -6,19 +6,39 @@
     </div>
     
     <nav>
-    <a href="{% url 'index' %}">Каталог</a>
+        <a href="{% url 'index' %}">Каталог</a>
+
+        <a href="{% url 'cart_detail' %}" style="position: relative; margin-right: 15px;">
+            🛒 Корзина
+            {% if request.session.cart %}
+                <span style="
+                    position: absolute;
+                    top: -10px;
+                    right: -15px;
+                    background: #ff4444;
+                    color: white;
+                    border-radius: 50%;
+                    padding: 2px 6px;
+                    font-size: 0.7rem;
+                    font-weight: bold;
+                    border: 1px solid black;
+                ">
+                    {{ request.session.cart|length }}
+                </span>
+            {% endif %}
+        </a>
     
-    <a href="{% url 'fish_game' %}" class="game-link">🎮 ИГРАТЬ</a>
+        <a href="{% url 'fish_game' %}" class="game-link">🎮 ИГРАТЬ</a>
     
-    {% if user.is_authenticated %}
-        <span style="font-size: 0.9rem;">Привет, <b>{{ user.username }}</b>!</span>
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout">Выход</button>
-        </form>
-    {% else %}
-        <a href="{% url 'login' %}">Вход</a>
-        <a href="{% url 'register' %}">Регистрация</a>
-    {% endif %}
-</nav>
+        {% if user.is_authenticated %}
+            <span style="font-size: 0.9rem;">Привет, <b>{{ user.username }}</b>!</span>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">Выход</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Вход</a>
+            <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
 </header>

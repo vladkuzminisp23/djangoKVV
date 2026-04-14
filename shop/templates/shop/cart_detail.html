@@ -1,0 +1,46 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div style="color: white; padding: 40px;">
+    <h1 style="color: var(--gold); margin-bottom: 30px;">🛒 Ваша корзина</h1>
+
+    {% if cart %}
+        <div style="background: #111; border: 1px solid #333; border-radius: 10px; padding: 20px;">
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--gold); color: var(--gold);">
+                        <th style="padding: 10px;">Товар</th>
+                        <th style="padding: 10px;">Кол-во</th>
+                        <th style="padding: 10px;">Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item_id, item in cart.items %}
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 15px 10px;">{{ item.name }}</td>
+                        <td style="padding: 15px 10px;">{{ item.quantity }} шт.</td>
+                        <td style="padding: 15px 10px; color: #39ff14;">{{ item.price }} ₽</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="margin-top: 30px; text-align: right;">
+                <h2 style="font-size: 2rem;">Итого: <span style="color: #39ff14;">{{ total_price }} ₽</span></h2>
+                
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
+                    <a href="{% url 'index' %}" style="text-decoration: none; color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 5px;">Продолжить покупки</a>
+                    <a href="{% url 'cart_clear' %}" style="text-decoration: none; background: #800; color: white; padding: 10px 20px; border-radius: 5px;">Очистить</a>
+                    <button style="background: var(--gold); color: black; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer;">ОФОРМИТЬ ЗАКАЗ</button>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 50px;">
+            <h2>В корзине пока пусто... 🎣</h2>
+            <p style="color: #888;">Пора закинуть пару удочек в наш садок!</p>
+            <a href="{% url 'index' %}" style="display: inline-block; margin-top: 20px; background: var(--gold); color: black; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">В КАТАЛОГ</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

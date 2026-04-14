@@ -6,7 +6,16 @@
         <h1 style="color: #c5a059;">{{ product.name }}</h1>
         <p style="font-size: 1.2rem; line-height: 1.6;">{{ product.description }}</p>
         <div style="font-size: 2rem; color: #39ff14; margin: 20px 0;">{{ product.price }} ₽</div>
-        <a href="{% url 'index' %}" class="btn" style="text-decoration: none; display: inline-block; width: auto;">Назад в каталог</a>
+        
+        <div style="display: flex; gap: 15px; align-items: center; margin-top: 30px;">
+            <a href="{% url 'cart_add' product.pk %}" style="background: var(--gold); color: black; padding: 15px 30px; text-decoration: none; font-weight: bold; border-radius: 5px; font-size: 1.2rem; transition: 0.3s;">
+                🛒 ДОБАВИТЬ В КОРЗИНУ
+            </a>
+            
+            <a href="{% url 'index' %}" class="btn" style="text-decoration: none; padding: 15px 20px; background: #333; color: white; border-radius: 5px; border: 1px solid #555;">
+                Назад в каталог
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}
